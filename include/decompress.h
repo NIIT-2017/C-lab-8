@@ -1,0 +1,30 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+#include <stdlib.h>
+#include <malloc.h>
+
+struct SYM {
+	unsigned char ch;
+	float freq;
+	char code[256];
+	struct SYM *left;
+	struct SYM *right;
+};
+union CODE {
+	unsigned char ch;
+	struct {
+		unsigned short b1 : 1;
+		unsigned short b2 : 1;
+		unsigned short b3 : 1;
+		unsigned short b4 : 1;
+		unsigned short b5 : 1;
+		unsigned short b6 : 1;
+		unsigned short b7 : 1;
+		unsigned short b8 : 1;
+	} byte;
+};
+void unPack(unsigned char ch, unsigned char *buf);
+void restoreFrom101File(const char * fileName, struct SYM * root, char magic);
+void makeCodes(struct SYM *root);
