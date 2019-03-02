@@ -24,7 +24,7 @@ int main(int argc, const char * argv[])
 		else if (1 == choice)
 		{
 			printf("\n\nBEGIN PACKING!!!\n");//just notification
-			printf("The name of compressed file is %s\n", argv[1]);
+			printf("The name of original file is %s\n", argv[1]);
 			FILE * fp_origin = fopen(argv[1], "rb");//checking file for reading
 			if (!fp_origin)
 			{
@@ -57,7 +57,7 @@ int main(int argc, const char * argv[])
 
 			MakeCompressedFile("coded.txt", "result.hfc", quantityOfLoopsForCompressing, tail, countUniqSymb, syms, argv[1], sizeOfOriginalFile);
 			printf("Compression was made successfully!\n");
-			printf("The name of decompressed file is result.hfc\n");
+			printf("The name of compressed file is result.hfc\n");
 			printf("If you want to decompress this file, start program again,");
 			printf("\nusing the name of compressed file as an argument of the command line\n");
 		}

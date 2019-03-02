@@ -10,46 +10,40 @@ SYM * MakingTableOfFrequencies(SYM * syms, const char * fileName, int * pcountUn
 	FILE * fp = fopen(fileName, "rb");				//checking file for reading
 	if (!fp)
 	{
-		puts("Cannot read file");
+		puts("Cannot read original file");
 		exit(-1);
 	}
 
 	int freq[256] = { 0 };							//creating array for frequencies of symbols
 	int totalNumberOfSymb = 0;						//total number of symbols in the document for counting frequencies
 	int chTemp = 0;
-	*pcountUniqSymb += 1;
-	while ((chTemp = fgetc(fp)) != EOF)
+	while ((chTemp = fgetc(fp)) != EOF)//forming array with frequencies, where index is a ASCII code of the element
 	{
-		//if (feof(fp)) break;
-		if (chTemp == 0)
+		for (int i = 0; i < SIZE1; i++)
+			if (chTemp == i)
+			{
+				freq[i] += 1;
+				totalNumberOfSymb++;
+				break;
+			}
+	}
+
+	for (int i = 0; i < SIZE1; i++)//counting unique symbols
+	{
+		if (0 != freq[i])
+			*pcountUniqSymb += 1;
+	}
+
+	for (int i = 0, j = 0; i < SIZE1; i++, j++)//counting frequencies and forming array of structures
+	{
+		if (freq[i])
 		{
-			chTemp = syms[0].ch;
-			freq[0]++;								//increasing it's frequency
-			totalNumberOfSymb++;					//increasing total amount of symbols
-			
+			syms[j].freq = (float)freq[i]; // totalNumberOfSymb;
+			syms[j].ch = i;
 		}
-		for (int i = 1; i < 256; i++)
-		{
-			if (chTemp == syms[i].ch)				//if this symbol is in our array
-			{
-				freq[i]++;							//increasing it's frequency
-				totalNumberOfSymb++;				//increasing total amount of symbols
-				break;								//exit because each symbol is in one exemplar in the array
-			}
-			if (syms[i].ch == 0)					//finding structure with free symbol field
-			{
-				syms[i].ch = chTemp;				//giving the meaning of symbol to this symbol field
-				freq[i] = 1;						//increasing it's freaquency by one
-				totalNumberOfSymb++;				//increasing total amount of symbols
-				*pcountUniqSymb += 1;				//increasing total amount of unique symbols
-				break;								//exit because each symbol is in one exemplar in the array
-			}
-		}//brace from for
-
-	}//brace from while
-
-	for (int i = 0; i < *pcountUniqSymb; i++)		//counting frequencies
-		syms[i].freq = (float)freq[i] / totalNumberOfSymb;
+		else
+			j--;
+	}
 	fclose(fp);//closing initial file
 	return syms;
 }
