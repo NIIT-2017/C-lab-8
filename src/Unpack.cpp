@@ -24,8 +24,8 @@ unsigned char * Unpack(unsigned char codedSymb, char newBuf[8])
 }
 
 
-void MakeDecompressedFile(SYM * newSyms, const char * fileName, int * pcountUniqSymb, unsigned char * pnewTail, 
-						unsigned char newFileExtention[5], long * pnewSizeOfOriginalFile)
+void MakeDecompressedFile(SYM * newSyms, const char * fileName, int * pcountUniqSymb, unsigned char * pnewTail,
+	unsigned char newFileExtention[5], long * pnewSizeOfOriginalFile)
 {
 	FILE * fp_pack = fopen(fileName, "rb");					//checking packed file for reading
 	if (!fp_pack)
@@ -69,9 +69,9 @@ void MakeDecompressedFile(SYM * newSyms, const char * fileName, int * pcountUniq
 	//reading the coded part*****************************************
 	unsigned char newArrOfEightElements[8] = { 0 };			//forming array of 8 symbols
 	unsigned char codedSymb = 0;
-	
-	for (long i = 0; i < (size - sizeOfHeader - 2); i++)	//writing to the coded decompressed file
-	{
+
+	for (long i = 0; i < (size - sizeOfHeader - 1); i++)	//writing to the coded decompressed file  
+	{														//we don't touch last symb because it is tail
 		codedSymb = fgetc(fp_pack);
 		Unpack(codedSymb, newArrOfEightElements);			//calling unpacking func
 		for (int j = 0; j < 8; j++)
@@ -90,8 +90,8 @@ void MakeDecompressedFile(SYM * newSyms, const char * fileName, int * pcountUniq
 	fclose(fp_decompr);
 }
 
-void MakeDecodedFile (const char * fileDecompr, int newCountUniqSymb, SYM * newSyms, 
-		unsigned char * newFileExtention, unsigned char * nameOfDecodedFile)
+void MakeDecodedFile(const char * fileDecompr, int newCountUniqSymb, SYM * newSyms,
+	unsigned char * newFileExtention, unsigned char * nameOfDecodedFile)
 {
 	FILE *fp_decompr = fopen(fileDecompr, "rb");			//checking file for reading
 	if (!fp_decompr)
@@ -118,7 +118,7 @@ void MakeDecodedFile (const char * fileDecompr, int newCountUniqSymb, SYM * newS
 			int flag = 0;
 			for (int j = 0; j < newCountUniqSymb; j++)
 			{
-				
+
 				if (strcmp(arrTmp, newSyms[j].code) == 0)
 				{
 					fputc((int)newSyms[j].ch, fp_decoded);

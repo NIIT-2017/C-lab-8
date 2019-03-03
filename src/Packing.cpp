@@ -73,8 +73,8 @@ unsigned char CountingLengthOfTail(const char * fileCoded, int * pquantityOfLoop
 }
 
 
-void MakeCompressedFile(const char * fileCoded, const char * fileResult, int quantOfLoopsForCompressing, 
-						int tail, int countUniqSymb, SYM * syms, const char * fileInitial, long sizeOfOriginalFile)
+void MakeCompressedFile(const char * fileCoded, const char * fileResult, int quantOfLoopsForCompressing,
+	int tail, int countUniqSymb, SYM * syms, const char * fileInitial, long sizeOfOriginalFile)
 {
 	FILE *fp_101 = fopen(fileCoded, "rb");						//checking file for reading
 	if (!fp_101)
@@ -108,7 +108,7 @@ void MakeCompressedFile(const char * fileCoded, const char * fileResult, int qua
 	//writing codes
 	unsigned char arrOfEightElements[8] = { 0 };				//forming array of 8 symbols
 	//for all elements before tail
-	for (int i = 0; i <= quantOfLoopsForCompressing; i++)
+	for (int i = 0; i < quantOfLoopsForCompressing; i++)
 	{
 		for (int j = 0; j < 8; j++)
 		{
@@ -122,19 +122,21 @@ void MakeCompressedFile(const char * fileCoded, const char * fileResult, int qua
 	{
 		arrOfEightElements[i] = (unsigned char)fgetc(fp_101);	//forming array for tail
 	}
-	for (int i = tail; i < 8-tail; i++)
+
+	for (int i = tail; i < 8; i++)
 	{
 		arrOfEightElements[i] = '0';							//adding nulls for the rest of array's elements
 	}
+
 	fputc((int)Pack(arrOfEightElements), fp_out);				//writing tail to the compressed file
 	fclose(fp_101);
 	fclose(fp_out);
 }
 
-unsigned char Pack(unsigned char buf[]) 
-{ 
-	union CODE code; 
-	code.byte.b1 = buf[0] - '0'; 
+unsigned char Pack(unsigned char buf[])
+{
+	union CODE code;
+	code.byte.b1 = buf[0] - '0';
 	code.byte.b2 = buf[1] - '0';
 	code.byte.b3 = buf[2] - '0';
 	code.byte.b4 = buf[3] - '0';
@@ -142,5 +144,5 @@ unsigned char Pack(unsigned char buf[])
 	code.byte.b6 = buf[5] - '0';
 	code.byte.b7 = buf[6] - '0';
 	code.byte.b8 = buf[7] - '0';
-	return code.ch; 
+	return code.ch;
 }
