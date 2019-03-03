@@ -40,6 +40,7 @@ SYM * MakingTableOfFrequencies(SYM * syms, const char * fileName, int * pcountUn
 		{
 			syms[j].freq = (float)freq[i] / totalNumberOfSymb;
 			syms[j].ch = i;
+			syms[i].code[0] = '\0';
 			syms[j].left = NULL;
 			syms[j].right = NULL;
 		}
