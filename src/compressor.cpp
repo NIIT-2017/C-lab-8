@@ -13,13 +13,12 @@ int main(int argc, char* argv[])
 	int tail = 0; // tail size
 	unsigned char ch = 0;
 	unsigned char buf[8] = { 0 };
-	int point = 0;
 	unsigned char temp = 0;
 	unsigned char num = 0;
 
 	if (argc < 2)
 	{
-		printf("Enter file name, then enter \"cmp\" for compress or enter \"decmp\" for decompress");
+		printf("You did not enter file name");
 		exit(EXIT_FAILURE);
 	}
 
@@ -28,7 +27,6 @@ int main(int argc, char* argv[])
 		puts("File not found!");
 		exit(EXIT_FAILURE);
 	}
-
 
 	while (fgetc(fp_in) != EOF)
 		count++;
@@ -56,7 +54,7 @@ int main(int argc, char* argv[])
 	printf("Tree was built!\n");
 	printStruct(syms, uniqueCount);
 
-	int ch1; // код символа из файла
+	int ch1; // character code from file
 
 	if ((fp_101 = fopen("101.txt", "wb")) == NULL)
 	{
@@ -72,14 +70,14 @@ int main(int argc, char* argv[])
 		for (int i = 0;i < uniqueCount;i++)
 			if (syms[i].ch == (unsigned char)ch1)
 			{
-				fputs(syms[i].code, fp_101); // выводим строку с кодом
+				fputs(syms[i].code, fp_101); // write code line in the 101-file 
 				count101 += strlen(syms[i].code);
-				break; // прерываем поиск
+				break; // interrupt search
 			}
 	}
 
 	tail = 8 - count101 % 8;
-	for (int i = 0;i < tail;i++)
+	for (int i = 0;i < tail;i++) // add tail
 		fputc('0', fp_101);
 
 	fclose(fp_in);
@@ -101,30 +99,27 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	//headline
-	num = uniqueCount - 1; //число уникальных символов, придет из анализатора, -1 чтоб убраться в 1 байт см практику
-	fwrite("abc", sizeof(char), 3, fp_out);// пишем заголовок для файла
-	fwrite(&num, sizeof(char), 1, fp_out);
-	for (int i = 0;i < uniqueCount;i++)
+	//write headline
+	num = uniqueCount - 1; //number of unique characters minus 1 (to get out in 1 byte)
+	fwrite("abc", 3, 1, fp_out);// unique abbreviation
+	fwrite(&num, 1, 1, fp_out);
+	for (int i = 0;i < uniqueCount;i++) // symbol and frequency table
 	{
 		fwrite(&syms[i].ch, 1, 1, fp_out);
 		fwrite(&syms[i].freq, 4, 1, fp_out);
 	}
-	fwrite(&tail, 1, 1, fp_out);
+	fwrite(&tail, 4, 1, fp_out); // tail
 
-	char str[5] = { 0 };
+	char str[5] = { 0 }; //read file extension
 	int k = 0, j = 0;
-
-	//read file extension
-	for (k = (strlen(argv[1])) - 3;argv[1][k] != '\0';k++, j++)
+	for (k = (strlen(argv[1])) - 3;argv[1][k] != '\0';k++, j++) 
 		str[j] = argv[1][k];
 	str[j] = '\0';
-	//printf("DOT %s\n",str);
 
-	fwrite(str, sizeof(char), 3, fp_out);
+	fwrite(str, 3, 1, fp_out); // file extension
 	// headline end
 
-	while (fread(buf, 8, 1, fp_101))
+	while (fread(buf, 8, 1, fp_101))  //packing of 8 characters 
 	{
 		temp = pack(buf);
 		fwrite(&temp, 1, 1, fp_out);

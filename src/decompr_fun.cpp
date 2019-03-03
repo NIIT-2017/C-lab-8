@@ -11,18 +11,15 @@ void printStruct(PSYM syms, int uniqueCount)
 
 PSYM buildTree(PSYM psym[], int size)
 {
-	// создаем временный узел
-	PSYM temp = (PSYM)malloc(sizeof(SYM));
-	// в поле частоты записывается сумма частот последнего и предпоследнего элементов psym
-	temp->freq = psym[size - 2]->freq + psym[size - 1]->freq;
-	// связываем созданный узел с двумя последними узлами
-	temp->left = psym[size - 1];
+	PSYM temp = (PSYM)malloc(sizeof(SYM)); // create temporary node
+	temp->freq = psym[size - 2]->freq + psym[size - 1]->freq; // write the sum of the frequencies of the last and next-to-last psym elements
+	temp->left = psym[size - 1]; //associate the created node with the last two nodes
 	temp->right = psym[size - 2];
-	temp->code[0] = 0;
-	if (size == 2) // мы сформировали корневой элемент с частотой 1.0
+	temp->code[0] = '\0';
+	if (size == 2) // we formed a root element with frequency 1.0
 		return temp;
 
-	for (int i = size - 3;i >= 0;i--)
+	for (int i = size - 3;i >= 0;i--) // add temp to the psym, keeping the frequency decreasing order
 	{
 		if (psym[i]->freq <= temp->freq)
 		{
@@ -30,7 +27,6 @@ PSYM buildTree(PSYM psym[], int size)
 			psym[i] = temp;
 		}
 	}
-	// добавляем temp в нужную позицию psym, сохраняя порядок убывания частоты
 	return buildTree(psym, size - 1);
 }
 
@@ -75,8 +71,6 @@ static unsigned int getChar(FILE *fp_101, PSYM root, int *size)
 	{
 		char ch1 = 0;
 		fread(&ch1, sizeof(char), 1, fp_101);
-		//if (size == 0)
-		//	return EOF;
 		if (ch1 == '0')
 			return getChar(fp_101, root->left, size);
 		if (ch1 == '1')

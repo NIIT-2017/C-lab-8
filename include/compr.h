@@ -3,7 +3,6 @@
 #include <string.h>
 #define N 256
 
-
 struct SYM
 {
 	unsigned char ch;

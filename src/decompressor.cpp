@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
 	if (argc < 2)
 	{
-		printf("Enter file name, then enter \"cmp\" for compress or enter \"decmp\" for decompress");
+		printf("You did not enter file name");
 		exit(EXIT_FAILURE);
 	}
 
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
 		fread(&syms[i].ch, 1, 1, fp_in);
 		fread(&syms[i].freq, 4, 1, fp_in);
 	}
-	fread(&tail, 1, 1, fp_in);
+	fread(&tail, 4, 1, fp_in);
 	fread(arr, 3, 1, fp_in);
 	arr[3] = '\0';
 	//end read headline
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	while (fread(&temp, sizeof(char), 1, fp_in))
+	while (fread(&temp, 1, 1, fp_in))
 	{
 		unPack(buf, temp);
 		fwrite(buf, 8, 1, fp_101);
@@ -92,7 +92,6 @@ int main(int argc, char* argv[])
 	printf("File 101 was decoded!\n");
 	fclose(fp_in);
 	printf("File was successfully decompressed!\n");
-
 
 	return 0;
 }

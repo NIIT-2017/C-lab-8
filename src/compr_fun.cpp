@@ -1,6 +1,5 @@
 #include "compr.h"
 
-
 static int index = 0;
 
 void createStruct(PSYM syms, unsigned char ch, int count, int * uniqueCount)
@@ -38,7 +37,6 @@ void createStruct(PSYM syms, unsigned char ch, int count, int * uniqueCount)
 	}
 }
 
-
 static int compar(const void* p1, const void* p2)
 {
 	if (((PSYM)p2)->freq > ((PSYM)p1)->freq)
@@ -54,30 +52,25 @@ void sortStruct(PSYM syms, int size)
 	qsort(syms, size, sizeof(SYM), compar);
 }
 
-
 void printStruct(PSYM syms, int uniqueCount)
 {
 	for (int i = 0;i < uniqueCount;i++)
 	{
 		printf("%c\t%f\t%s\n", syms[i].ch, syms[i].freq, syms[i].code);
 	}
-
 }
 
 PSYM buildTree(PSYM psym[], int size)
 {
-	// создаем временный узел
-	PSYM temp = (PSYM)malloc(sizeof(SYM));
-	// в поле частоты записывается сумма частот последнего и предпоследнего элементов psym
-	temp->freq = psym[size - 2]->freq + psym[size - 1]->freq;
-	// связываем созданный узел с двумя последними узлами
-	temp->left = psym[size - 1];
+	PSYM temp = (PSYM)malloc(sizeof(SYM)); // create temporary node
+	temp->freq = psym[size - 2]->freq + psym[size - 1]->freq; // write the sum of the frequencies of the last and next-to-last psym elements
+	temp->left = psym[size - 1]; //associate the created node with the last two nodes
 	temp->right = psym[size - 2];
 	temp->code[0] = '\0';
-	if (size == 2) // мы сформировали корневой элемент с частотой 1.0
+	if (size == 2) // we formed a root element with frequency 1.0
 		return temp;
 
-	for (int i = size - 3;i >= 0;i--)
+	for (int i = size - 3;i >= 0;i--) // add temp to the psym, keeping the frequency decreasing order
 	{
 		if (psym[i]->freq <= temp->freq)
 		{
@@ -85,7 +78,6 @@ PSYM buildTree(PSYM psym[], int size)
 			psym[i] = temp;
 		}
 	}
-	// добавляем temp в нужную позицию psym, сохраняя порядок убывания частоты
 	return buildTree(psym, size - 1);
 }
 
@@ -122,7 +114,6 @@ unsigned char pack(unsigned char buf[])
 void printStructFriq(PSYM syms, int uniqueCount)
 {
 	float maxFreq = 0.0;
-
 	printf("Symbol\tfrequency\n");
 
 	for (int i = 0;i < uniqueCount;i++)
