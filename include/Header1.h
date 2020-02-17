@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 struct SYM
 {
@@ -27,19 +28,6 @@ union CODE
     } byte;
 };
 
-//структура для записи переменных типа float в бинарном виде
-union FCODE
-{
-    float ft;
-    struct
-    {
-        char c1 : 8;
-        char c2 : 8;
-        char c3 : 8;
-        char c4 : 8;
-    } quad;
-};
-
 void printChart(SYM* chart, int size);
 SYM* findOut(SYM* chart, FILE* fp, int* numberOfSymbols, int* size);
 int compar(const void* p1, const void* p2);
@@ -52,3 +40,4 @@ void writeCode(FILE* fp, FILE* out, int numberOfSymbols, SYM* chart, int tail, i
 int check(FILE* fp, char* id);
 SYM* buildChart(SYM* chart, int numberOfSymbols, FILE* fp);
 void printText(FILE* fp, SYM* root, int tail);
+void writeDownText(FILE* fp, FILE* out, SYM* root, int tail);

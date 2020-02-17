@@ -1,7 +1,5 @@
 #include "Header1.h"
 
-
-//printChart
 //выводит таблицу встречаемости символов в формате: /код символа / графическое отображение / частота встречаемости/
 void printChart(SYM* chart, int size)
 {
@@ -11,7 +9,6 @@ void printChart(SYM* chart, int size)
     }
 }
 
-//IsConteined:
 //проверяет есть ли символ в массиве chart;
 //возращает индекс символа или -1 если символ не найден.
 int IsConteined(SYM* chart, unsigned char ch, int size)
@@ -24,7 +21,6 @@ int IsConteined(SYM* chart, unsigned char ch, int size)
     return -1;
 }
 
-//addSymbol:
 //добавляет элемент SYM для нового уникального символа в конец массива chart и иницализирует его поля;
 //возвращает указатель на первый элемент chart или NULL в случае неуспешного выполнения realloc.
 SYM* addSymbol(SYM* chart, int size, unsigned char ch)
@@ -40,14 +36,13 @@ SYM* addSymbol(SYM* chart, int size, unsigned char ch)
     }
     else
     {
-        printf("realloc error!\n");
+        printf("function \"addSymbol\": ");
         return NULL;
     }
 
     return newChart;
 }
 
-//findOut:
 //формирует динамический массив символов, которые есть в файле (поток fp);
 //определяет количество уникальных символов;
 //определяет частоту встречаемости каждого символа;
@@ -80,17 +75,15 @@ SYM* findOut(SYM* chart, FILE* fp, int* numbersOfSymbols, int* size)
         counter++;
     }
 
-    //printf("\nsymbols were red : %li\n", counter);
-
     //вычисляем частоту встречаемости каждого символа
     for (int i = 0; i < *numbersOfSymbols; i++)
         chart[i].frequency = (float)symbols[i] / counter;
 
-    *size = counter; //размер исходного файла
+    //размер исходного файла
+    *size = counter;
     return chart;
 }
 
-//compar:
 //используется в qsort, сортирует элементы в chart по убыванию частоты встречаемости.
 int compar(const void* p1, const void* p2)
 {
