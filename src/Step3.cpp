@@ -90,9 +90,10 @@ unsigned short getDigit(int* i, unsigned short* buf, FILE* fp, int tail)
 }
 
 //восстановливает и выводит в консоль содержимое исходного файла
-void printText(FILE* fp, SYM* root, int tail)
+long int printText(FILE* fp, SYM* root, int tail)
 {
     SYM* temp = root;
+    long int counter = 0;
     unsigned short buf[9] = { 0 };//массив для хранения строкового представления байта, 9 элемент нужен для определения конца файла при нулевом размере "хвоста"
     unsigned short digit;//для хранения значение каждого последующего бита
     int i = -1;//счетчик порядкового номера бита в байте, "-1" обозначает что ни один байт еще не считан
@@ -108,20 +109,24 @@ void printText(FILE* fp, SYM* root, int tail)
         {
             printf("%c", temp->symbol);
             temp = root;
+            counter++;
         }
         i++;
     }
+
+    return counter;
 }
 
 //восстановливает и выводит в файл содержимое исходного файла
-void writeDownText(FILE* fp, FILE* out, SYM* root, int tail)
+long int writeDownText(FILE* fp, FILE* out, SYM* root, int tail)
 {
     SYM* temp = root;
+    long int counter = 0;
     unsigned short buf[9] = { 0 };//массив для хранения строкового представления байта, 9 элемент нужен для определения конца файла при нулевом размере "хвоста"
     unsigned short digit;//для хранения значение каждого последующего бита
     int i = -1;//счетчик порядкового номера бита в байте, "-1" обозначает что ни один байт еще не считан
 
-    //считываем побитово информацию и перемещаемся по дереву пока не находим "лист"б когда нашли - выводим символ и переходим к "корню" дерева
+    //считываем побитово информацию и перемещаемся по дереву пока не находим "лист", когда нашли - выводим символ и переходим к "корню" дерева
     while ((digit = getDigit(&i, buf, fp, tail)) != 2)
     {
         if (digit == 0)
@@ -132,7 +137,10 @@ void writeDownText(FILE* fp, FILE* out, SYM* root, int tail)
         {
             fputc(temp->symbol, out);
             temp = root;
+            counter++;
         }
         i++;
     }
+
+    return counter;
 }

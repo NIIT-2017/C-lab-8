@@ -7,20 +7,22 @@ extern SYM* root;
 extern int numberOfSymbols;
 extern int size;
 extern int tail;
-extern char id[]; //итендификатор, используемый для распознования "своих" файлов
-extern char inFileName[]; //имя исходного файла
-extern char fileType[]; //расширение файла
+extern char id[];
+extern char inFileName[];
+extern char FTN[];
+extern char fileType[];
 
 extern char outFileName[]; //имя выходного файла
-//extern char OFN[];
 extern char file101[];
-//extern char op1[];
-//extern char op2[];
-//extern char op3[];
-//extern char commands[][5];
 
 int Compress()
 {
+    //освобождение памяти, значения переменных chart, psym, root устанавливается NULL
+    cleanVars();
+    //если имя выходного файла не указано, дополнение имя файла, используемого по умолчанию, расширением по умолчанию
+    strcpy(fileType, FTN);
+    extension();
+    
     FILE* fp = NULL;
     FILE* out = NULL;
 
@@ -88,8 +90,8 @@ int Compress()
     fclose(fp);
     fclose(out);
 
-    //освобождение памяти, значения переменных chart, psym, root устанавливается NULL
-    cleanVars();
+    ////освобождение памяти, значения переменных chart, psym, root устанавливается NULL
+    //cleanVars();
 
     printf("Successful!\n\n");
     return 0;
@@ -97,8 +99,12 @@ int Compress()
 
 int Decompress(int way)
 {
+    //освобождение памяти, значения переменных chart, psym, root устанавливается NULL
+    cleanVars();
+    
     FILE* fp = NULL;
     FILE* out = NULL;
+    long int dcSize = 0;
 
     //открытие файла с перекодированной исходной информацией
     fp = fopen(inFileName, "rb");
@@ -148,26 +154,30 @@ int Decompress(int way)
     {
         //восстановление и вывод содержание исходного файла в консоль
         printf("***********\n");
-        printText(fp, root, tail);
+        dcSize = printText(fp, root, tail);
         printf("\n***********\n");
     }
     else
     {
+        //восстановление исходного расширения файла
+        extension();
+
         //открытие файла для записи восттановленной информации
         out = fopen(outFileName, "wt");
         if (out == NULL)
             return Error(1, outFileName);
 
         //восстановление и вывод содержание исходного файла в выходной файл
-        writeDownText(fp, out, root, tail);
+        dcSize = writeDownText(fp, out, root, tail);
         fclose(out);
     }
 
     fclose(fp);
 
-    //освобождение памяти, значения переменных chart, psym, root устанавливается NULL
-    cleanVars();
-
-    printf("Successful!\n\n");
+    printf("\norigin file's size = %li bytes\ndecompressed file's size = %li bytes\n", size, dcSize);
+    if (size == dcSize)
+        printf("Successful!\n\n");
+    else
+        printf("Information lost!\n\n");
     return 0;
 }

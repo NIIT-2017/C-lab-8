@@ -4,20 +4,16 @@
 extern SYM* chart;
 extern SYM** psym;
 extern SYM* root;
-//extern int numberOfSymbols;
-//extern int size;
-//extern int tail;
-//extern char id[]; //итендификатор, используемый для распознования "своих" файлов
-extern char inFileName[]; //имя исходного файла
-extern char fileType[]; //расширение файла
+extern int numberOfSymbols;
+extern char inFileName[];
+extern char fileType[];
 
-extern char outFileName[]; //имя выходного файла
+extern char outFileName[];
 extern char OFN[];
-//extern char file101[];
 extern char op1[];
 extern char op2[];
 extern char op3[];
-extern char commands[][5];
+extern char commands[][6];
 
 //вывод в консоль инструкции к компрессору
 int giveIns()
@@ -26,9 +22,10 @@ int giveIns()
     printf("\nCode of a command:\n");
     printf("\"c\" - compress the \"name of the origin file\" into \"name of the result file\"\n");
     printf("\"d\" - decompress the \"name of the origin file\" into \"name of the result file\"\n");
-    printf("\"dcmd\" - decompress the \"name of the origin file\" into Console(stdout)\n\n");
+    printf("\"dcmd\" - decompress the \"name of the origin file\" into Console(stdout)\n");
+    printf("\"f\" - display list of symbols and its frequency\n\n");
     printf("\"name of the origin file\" and \"name of the result file\" can only consist of letters and numbers!!!\n\n");
-    printf("The \"name of the result file\" isn't necessary, on default it is \"OutFile.txt\"\n\n");
+    printf("The \"name of the result file\" isn't necessary, on default it is \"OutFile.txt\".\nAlso when you use decompressing u can write a file name without an extension.\n");
     printf("For exit enter \"exit\"\n**************\n");
 
     return -1;
@@ -65,9 +62,33 @@ int Error(int code, char* s)
         break;
     }
 
-    printf("For instructions enter \"ins\"\n");
-
     return code;
+}
+
+//освобождение памяти занимаемой деревом root
+void freeTree(SYM* root)
+{
+    //"листы" дерева нельзя направлять в free потому-что эти элементы не создавались malloc\realloc
+    if (root->left == NULL && root->right == NULL)
+        return;
+    if (root->left != NULL)
+        freeTree(root->left);
+    if (root->right != NULL)
+        freeTree(root->right);
+    //если у элемента были "листья" то это ветки, они создавались malloc
+    free(root);
+}
+
+//освобождение памяти, значения переменных chart, psym, root устанавливается NULL
+void cleanVars()
+{
+    if (root != NULL)
+        freeTree(root);
+    free(chart);
+    free(psym);
+    chart = NULL;
+    psym = NULL;
+    root = NULL;
 }
 
 //определение корректности кода команды
@@ -82,7 +103,7 @@ int isCorrectOp1(char* op1)
 }
 
 //определение допустимости имени файла(должны быть именная часть, точка, расширение. Использоваться могут только буквы и цифры)
-int isFileNameValid(char* fileName)
+int isFileNameValid(char* fileName, int flag)
 {
     int i = 0;
     //в именной части должен быть хотя бы один символ
@@ -95,7 +116,14 @@ int isFileNameValid(char* fileName)
     
     //проверяем что после именной части стоит точка
     if (fileName[i++] != '.')
-        return 0;
+    {
+        //проверяем если происходит распоковка файла то допустимо указание только именной части
+        if (flag && !strcmp(op1, commands[1]))
+            return 1;
+        else
+            return 0;
+    }
+
     //в расширении должен быть хотя бы один символ
     if (!isalnum(fileName[i]))
         return 0;
@@ -108,49 +136,6 @@ int isFileNameValid(char* fileName)
     //имя файла корректно
     return 1;
 }
-
-//определение составляющих команды
-//int ops(char* str)
-//{
-//    int i = 0;
-//    int j = 0;
-//    while (str[i])
-//    {
-//        if (isspace(str[i]))
-//            break;
-//        else
-//            op1[j++] = str[i];
-//        i++;
-//    }
-//    if (!str[i] && op1[0] != 0)
-//        return 1;
-//    i++;
-//    j = 0;
-//    while (str[i])
-//    {
-//        if (isspace(str[i]))
-//            break;
-//        else
-//            op2[j++] = str[i];
-//        i++;
-//    }
-//    if (!str[i] && op2[0] != 0)
-//        return 2;
-//    i++;
-//    j = 0;
-//    while (str[i])
-//    {
-//        if (isspace(str[i]))
-//            break;
-//        else
-//            op3[j++] = str[i];
-//        i++;
-//    }
-//    if (!str[i] && op3[0] != 0)
-//        return 3;
-//    
-//    return 0;
-//}
 
 //обнуление массивов в которых хранятся команды
 void cleanop(char* op)
@@ -166,79 +151,82 @@ int readCommand()
     cleanop(op2);
     cleanop(op3);
 
-    int number = 0;
-    char str[STRSIZE] = { 0 };
+    int number = 0; //число прочитаных частей команды
+    char str[STRSIZE] = { 0 }; //массив для хранения введеной команды
     fgets(str, 200, stdin);
     if (str != NULL && (strlen(str) - 1) >= 0)
         str[strlen(str) - 1] = 0;
     else
         return Error(-3, str);
 
+    //разбор команды на части
     if ((number = sscanf(str, "%s %s %s", op1, op2, op3)) == EOF)
         return Error(-3, str);
-    //number = ops(str);
 
-    printf("po1 : %s\nop2 : %s\nop3 : %s\n", op1, op2, op3);
+    //анализ на содержание и допустимость веденной команды
 
+    //обработка команды с тремя операндами
     if (number == 3)
+    {
         if (isCorrectOp1(op1))
         {
-            if (isFileNameValid(op2))
+            if (isFileNameValid(op2, 0))
                 strcpy(inFileName, op2);
             else
                 return Error(-2, op2);
-            if (isFileNameValid(op3))
+
+            if (isFileNameValid(op3, 1))
                 strcpy(outFileName, op3);
             else
                 return Error(-2, op3);
         }
-        else
-            return Error(-3, op1);
+    }
+    //обработка команды с двумя операндами
     else if (number == 2)
+    {
         if (isCorrectOp1(op1))
-            if (isFileNameValid(op2))
+        {
+            if (isFileNameValid(op2, 0))
             {
                 strcpy(inFileName, op2);
                 strcpy(outFileName, OFN);
             }
             else
                 return Error(-2, op2);
-        else
-            return Error(-3, op1);
+        }
+    }
+    //обработка команды с одним операндом
     else if (number == 1)
+    {
+        //если введено "exit"
         if (!strcmp(commands[4], op1))
+        {
+            //освобождение памяти, значения переменных chart, psym, root устанавливается NULL
+            cleanVars();
             return 0;
+        }
         else if (!strcmp(commands[3], op1))
             return giveIns();
+        else if (!strcmp(commands[5], op1))
+            return printChart(chart, numberOfSymbols);
         else
             return Error(-3, op1);
+    }
     else
         return Error(-3, op1);
 
     return 1;
 }
 
-//освобождение памяти занимаемой деревом root
-void freeTree(SYM* root)
+//доплнение имени файлам расширением, если его нет
+void extension()
 {
-    //"листы" дерева нельзя направлять в free потомучто эти элементы не создавались malloc\realloc
-    if (root->left == NULL && root->right == NULL)
-        return;
-    if (root->left != NULL)
-        freeTree(root->left);
-    if (root->right != NULL)
-        freeTree(root->right);
-    //если у элемента были "листья" то это ветки, они создавались malloc
-    free(root);
+    int i = 0;
+    while (outFileName[i])
+        if (outFileName[i++] == '.')
+            return;
+    outFileName[i] = '.';
+    outFileName[i + 1] = 0;
+    strcat(outFileName, fileType);
 }
 
-//освобождение памяти, значения переменных chart, psym, root устанавливается NULL
-void cleanVars()
-{
-    freeTree(root);
-    free(chart);
-    free(psym);
-    chart = NULL;
-    psym = NULL;
-    root = NULL;
-}

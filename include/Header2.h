@@ -4,3 +4,4 @@ int readCommand();
 void cleanVars();
 int Compress();
 int Decompress(int way);
+void extension();

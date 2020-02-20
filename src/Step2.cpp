@@ -113,7 +113,6 @@ void writeCode(FILE* fp, FILE* out, int numberOfSymbols, SYM* chart, int tail, i
 {
     unsigned char buf[8] = { 0 }; //массив для временного хранения строкового представления байта
     int ch;
-    //FCODE fcode; //используется для записи переменных типа float в бинарном виде
 
     fwrite(id, sizeof(char), strlen(id), out); //запись итендификатора файла
     fwrite(&numberOfSymbols, sizeof(int), 1, out); //запись количества уникальных символов
@@ -121,16 +120,13 @@ void writeCode(FILE* fp, FILE* out, int numberOfSymbols, SYM* chart, int tail, i
     //запись каждого уникального символа и его частоты встречаемости
     for (int i = 0; i < numberOfSymbols; i++)
     {
-        //fprintf(out, "%c", chart[i].symbol);
         fwrite(&chart[i].symbol, sizeof(char), 1, out);
-        //fcode.ft = chart[i].frequency;
         fwrite(&chart[i].frequency, sizeof(float), 1, out);
-        //fprintf(out, "%c%c%c%c", fcode.quad.c1, fcode.quad.c2, fcode.quad.c3, fcode.quad.c4);
     }
 
     fwrite(&tail, sizeof(int), 1, out); //запись размера "хвоста" в битах
     fwrite(&size, sizeof(int), 1, out); //запись размера исходного файла в байтах
-    int length = strlen(fileType);
+    int length = strlen(fileType);//считывание длины разрешения исходного файла в символах
     fwrite(&length, sizeof(int), 1, out);//запись длины в символах расширения исходного файла
     fwrite(fileType, sizeof(char), length, out);//запись расширения исходного файла
 

@@ -1,12 +1,17 @@
 #include "Header1.h"
 
 //выводит таблицу встречаемости символов в формате: /код символа / графическое отображение / частота встречаемости/
-void printChart(SYM* chart, int size)
+int printChart(SYM* chart, int size)
 {
-    for (int i = 0; i < size; i++)
-    {
-        printf("symbol %i = '%c', frequency = %f\n", chart[i].symbol, (char)chart[i].symbol, chart[i].frequency);
-    }
+    if (chart != NULL)
+        for (int i = 0; i < size; i++)
+        {
+            printf("symbol %i = '%c', frequency = %f\n", chart[i].symbol, (char)chart[i].symbol, chart[i].frequency);
+        }
+    else
+        printf("The chart is empty!\n\n");
+
+    return -1;
 }
 
 //проверяет есть ли символ в массиве chart;

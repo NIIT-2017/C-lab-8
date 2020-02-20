@@ -1,23 +1,24 @@
 #include "Header1.h"
 #include "Header2.h"
 
-SYM* chart;
-SYM** psym;
-SYM* root;
+SYM* chart; //таблица встречаемости символов
+SYM** psym; //массив указаьелей на элементы массива chart
+SYM* root; //корневой элемент дерева
 int numberOfSymbols; //количество уникальных символов
 int size; //размер исходного файла в байтах
 int tail; // длина "хвоста"
 
 char id[] = "HFCmprsGAN";  //итендификатор, используемый для распознования "своих" файлов
-char OFN[] = "OutFile.txt";
-char file101[] = "101.txt";
+char OFN[] = "OutFile"; //имя файла с результатом работы компрессора по умолчанию, расширение восстанавливается при распоковке
+char FTN[] = "txt"; //расширение выходного файла по умолчанию
+char file101[] = "101.txt"; //имя файла для хранения строкового представления перекодированной информации
 char inFileName[20] = { 0 }; //имя исходного файла
 char fileType[10] = { 0 };//расширение файла
 char outFileName[20] = { 0 }; //имя выходного файла
-char op1[100] = { 0 };
-char op2[100] = { 0 };
-char op3[100] = { 0 };
-char commands[5][5] = { "c", "d", "dcmd", "ins", "exit" };
+char op1[100] = { 0 }; //первая часть команды для компрессора - код команды
+char op2[100] = { 0 }; //вторая часть команды для компрессора - имя файла для обработки
+char op3[100] = { 0 }; //третья часть команды для компрессора - имя файла для вывода результата
+char commands[6][6] = { "c", "d", "dcmd", "ins", "exit", "f" }; //каталог команд
 
 int main()
 {
@@ -42,8 +43,6 @@ int main()
                 flag = Decompress(0);
             else
                 flag = Decompress(1);
-            if (flag)
-                return flag;
         }
         printf("Please, enter a command. For instructions enter \"ins\"\n");
     }

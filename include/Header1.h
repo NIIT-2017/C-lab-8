@@ -28,7 +28,7 @@ union CODE
     } byte;
 };
 
-void printChart(SYM* chart, int size);
+int printChart(SYM* chart, int size);
 SYM* findOut(SYM* chart, FILE* fp, int* numberOfSymbols, int* size);
 int compar(const void* p1, const void* p2);
 SYM** makePsym(SYM** psym, SYM* chart, int size);
@@ -39,5 +39,5 @@ int write101(SYM* chart, FILE* fp, FILE* out, int size);
 void writeCode(FILE* fp, FILE* out, int numberOfSymbols, SYM* chart, int tail, int size, char* id, char* fileType);
 int check(FILE* fp, char* id);
 SYM* buildChart(SYM* chart, int numberOfSymbols, FILE* fp);
-void printText(FILE* fp, SYM* root, int tail);
-void writeDownText(FILE* fp, FILE* out, SYM* root, int tail);
+long int printText(FILE* fp, SYM* root, int tail);
+long int writeDownText(FILE* fp, FILE* out, SYM* root, int tail);
