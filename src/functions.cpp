@@ -94,20 +94,20 @@ void packIfOne(char ch, int number, char* name, char* extension)
 }
 struct SYM* buildTree(struct SYM* psyms[], int count)
 {
-    // создаЄм временный узел
+    // make temporary node
     struct SYM* temp = (struct SYM*)malloc(sizeof(struct SYM));
-    // в поле частоты записываетс€ сумма частот последнего и предпоследнего элементов массива psym
+    // Write sum of the last and second last items' frequencies of the array psyms to frequency field of temporary node. 
     temp->freq = psyms[count - 2]->freq + psyms[count - 1]->freq;
-    // св€зываем созданный узел с двум€ последними узлами
+    // connect temporary node with two last nodes
     temp->left = psyms[count - 1];
     temp->right = psyms[count - 2];
     temp->code[0] = 0;
-    if (count == 2) // мы сформировали корневой элемент с частотой 1.0
+    if (count == 2) // made root with frequency 1.0
         return temp;
-        // добавл€ем temp в нужную позицию psyms, сохран€€ пор€док убывани€ частоты
+        // add temp to psyms in a sorting way
     int position = count - 3;
-    //отбрасываем две позиции с использованными частотами
-    //пока позици€ больше нул€ и ее частота меньше рассчитанной,сдвигаем ее вправо. объ€вл€ем новую позицию на шаг левее
+    //don't use two last positions with used frequencies
+    //Go right and make new position in the left while position is above zero and its frequency is below temporary. 
     while (position >= 0 && (psyms[position]->freq <= temp->freq))
     {
         psyms[position + 1] = psyms[position];
@@ -156,18 +156,18 @@ int coder(FILE* fp_in, SYM* syms, int count)
 }
 void writeHeader(FILE* fp_compressed, int* count, SYM* syms, int* tail, int* sum, char* extension)
 {
-    fwrite("kom", 1, 3, fp_compressed); // сигнатура
-    fwrite(count, 4, 1, fp_compressed); // количество уникальных символов
+    fwrite("kom", 1, 3, fp_compressed); // signature
+    fwrite(count, 4, 1, fp_compressed); // quantity of unique symbols
     for (int i = 0; i < *count; i++)
     {
-        fwrite(&syms[i].ch, 1, 1, fp_compressed); // символ
-        fwrite(&syms[i].freq, 4, 1, fp_compressed); // частота
+        fwrite(&syms[i].ch, 1, 1, fp_compressed); // symbol
+        fwrite(&syms[i].freq, 4, 1, fp_compressed); // frequency
     }
-    fwrite(tail, 1, 1, fp_compressed); // длина хвоста
-    fwrite(sum, 4, 1, fp_compressed); // размер исходного файла
+    fwrite(tail, 1, 1, fp_compressed); // length of tail
+    fwrite(sum, 4, 1, fp_compressed); // size of source file
     for (int i = 0; i < 8; i++)
     {
-        fwrite(&extension[i], 1, 1, fp_compressed); // расширение
+        fwrite(&extension[i], 1, 1, fp_compressed); // extension
     }
 
 }
@@ -290,4 +290,3 @@ char decoder(FILE* fp_decodes, PSYM root)
     else if (ch == '1')
         return decoder(fp_decodes, temp->right);
 }
-
