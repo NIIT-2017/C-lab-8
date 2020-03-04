@@ -1,3 +1,13 @@
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//                                                       REDME                                                     //
+//                                             Lab8 by asintsov. 2020                                              //
+//The main.exe compresses files with various extensions. The resulting new files have extension ".asin".           //
+//Also the main.exe decompresses ".asin"-files with returning of the original extension.                           //
+//The temparary file 101.txt creates and removes during the compressing and the decompressing.                     //
+//For starting of the compressing run main.exe with two arguments: argv[1]="name_compressing_file" argv[2]="c".    //
+//For starting of the decompressing run main.exe with two arguments: argv[1]="name_decompressing_file" argv[2]="d".//
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 #define UNIQ_CODE "aSiN"
 #define COMPRSD_EXTANSION ".asin"
 #define TEMP_FILE_NAME "101.txt"
