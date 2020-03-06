@@ -2,7 +2,8 @@
 #include <algorithm>
 void help()
 {
-    printf("\nIf you want to compress file enter 'C',if you want to decompress enter 'D'\n");
+    printf("\nOperationName DataInput.txt DataOutput.compressed\nExample : D Input.compressed Output.txt");
+    printf("\nIf you want to compress file enter 'C',if you want to decompress enter 'D' as operation");
 }
 int main(int argc,char** argv)
 {
