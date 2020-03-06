@@ -9,11 +9,6 @@ int makeCodeFile(SYM* table , FILE* fp_in, FILE* fp_101) {
     int tailLenght = 0;
     while ((ch = fgetc(fp_in)) != -1) {
         for (int i = 0; i < 256; i++) {
-            /*if (table[i].ch == (unsigned char)ch) {
-                fputs(table[i].code, fp_101);
-                break;
-            }*/
-
             if (table[i].ch == (unsigned char)ch) {
                 fputs(table[i].code, fp_101);
                 break;
@@ -38,6 +33,19 @@ unsigned char pack(unsigned char buf[]) {
     code.byte.b7 = buf[6] - '0';
     code.byte.b8 = buf[7] - '0';
     return code.ch;
+}
+
+char* getFileExtension(char* str) {
+    char* extension = str;
+    while (*str) {
+        if (*str == '.' ) {
+            extension= ++str ;
+        }
+        else {
+            str++;
+        }
+    }
+    return extension;
 }
 
 void makeHeader(FILE *fp, FILE *fpResult, char signsture, int uniqueSymbols, SYM* table, int tailLength, long sizeOfFile, char* fileExtension) {

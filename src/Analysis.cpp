@@ -3,12 +3,6 @@
 #include <string.h>
 #include "head1.h"
 
-void chomp(char* string) {                      //delating symbol of end of string
-    if (string[strlen(string) - 1] == '\n') {
-        string[strlen(string) - 1] = '\0';
-    }
-}
-
 void initializeTable(SYM* table, char* str, float total) {
     int i = 0;
     for (i = 0; i < 256; i++) {
@@ -35,6 +29,7 @@ void printTable(SYM* table) {
     }
 }
 
+//This function is just for check if symbol code looks properly
 void smartPrintTable(SYM* table) {
     for (int i = 0; i < 256; i++) {
         if (table[i].freq == 0.0) {
@@ -44,7 +39,6 @@ void smartPrintTable(SYM* table) {
     }
 }
 
-//cmp for frequrncy table
 int cmp(const void* a, const void* b) {                    
     if (((struct SYM*)a)->freq > ((struct SYM*)b)->freq) {
         return -1;
@@ -62,10 +56,10 @@ int searchUniqueSymbols(SYM* table) {
     int i = 0;
     for (int i = 0; i < 256; i++) {
         if (table[i].freq == 0.0) {
-            break;
+           
         }
         else {
-            count++;
+         count++;
         }
     }
     return count;

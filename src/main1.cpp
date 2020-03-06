@@ -1,9 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "head1.h"
 
 int main(int argc, char* argv[]) {
-   //Variables and arrays
+    //Variables and arrays
     int i = 0;
     int N = 256;
     struct SYM* root = NULL;
@@ -16,14 +17,33 @@ int main(int argc, char* argv[]) {
     char sig = 3;
     unsigned char packedCh;
     int countOfUniqueSymbols = 0;
-    char* fileExtension = "txt";
+    char* fileName;
+    char* fileExtension;
+    char* outFileName;
 
-    //compress.exe toRead.txt;
+    //Start
+
+    if (argc < 2) {
+       printf("You should call the programme with parameters, for example: analysis.exe compress file_name.txt\n");
+       return 1;
+    }
+
+    //Work with app params
+
+    if (argc == 2) {
+        fileName = argv[1];
+    } else if (strcmp(argv[1], "compress")) {
+        fileName = argv[2];
+    } else {
+        printf("Unfortunatly decompressor isn`t ready yet =( Please, try tommorow.\n");
+        return 1;
+    }
+
     //Work with files
     //1 Work with sourse file
-    FILE* fp = fopen("toRead.txt", "rb");
+    FILE* fp = fopen(fileName, "rb");
     if (!fp) {
-        printf("Error!\n");
+        printf("Error! File %s couldn't be opened!\n", fileName);
         return 1;
     }
     long len = 0;
@@ -36,7 +56,6 @@ int main(int argc, char* argv[]) {
     initializeTable(table, text, len);
 
     while (fgets(text, 256, fp)) {
-        chomp(text);
         makeTable(table, text, len);
     }
     qsort(table, 256, sizeof(SYM), cmp);
@@ -52,10 +71,10 @@ int main(int argc, char* argv[]) {
     //2 Work with code file
     FILE* fp101 = fopen("101.txt", "w+");
     if (!fp101) {
-        printf("Error! fp1.");
+        printf("Error! File 101.txt isn'i exist!\n");
         return 1;
     }
-    printf("Smart code table\n");
+    //This function is just for check if symbol code looks properly
     smartPrintTable(table);
     //Before useing of fp go back to begining of file
     fseek(fp, 0L, SEEK_SET);
@@ -63,14 +82,17 @@ int main(int argc, char* argv[]) {
     printf("UNIQUE IS %d\n", countOfUniqueSymbols);
     makeCodeFile(table, fp, fp101);
     tail = makeCodeFile(table, fp, fp101);
-        //fprintf(fp1, "%s\n", table->code);
-   
-    //Work with final file
-    FILE* fpResult = fopen("Result.txt", "wb");
+
+    //3 Work with final file
+    outFileName = (char*)malloc(sizeof(char) * (strlen(fileName) + 4));
+    strcpy(outFileName, fileName);
+    strcat(outFileName, ".arc");
+    FILE* fpResult = fopen(outFileName, "wb");
     if (!fpResult) {
-        printf("Error! Result");
+        printf("Error! File %s couldn't be opened!", outFileName);
         return 1;
     }
+    fileExtension = getFileExtension(fileName);
     makeHeader(fp, fpResult, sig, countOfUniqueSymbols, table, tail, lenResult, fileExtension);
     //Before reading of fp101 go back to begining of file
     fseek(fp101, 0L, SEEK_SET);
@@ -78,9 +100,11 @@ int main(int argc, char* argv[]) {
         packedCh = pack((unsigned char*)buf);
         fwrite(&packedCh, sizeof(unsigned char), 1, fpResult);
     }
+
+    //Closeing all used files
     fclose(fp);
     fclose(fp101);
     fclose(fpResult);
-   
+
     return 0;
 }

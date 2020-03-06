@@ -1,5 +1,3 @@
-
-
 struct SYM {
     unsigned char ch;
     float freq;
@@ -10,22 +8,6 @@ struct SYM {
 
 typedef struct SYM TSYM;     //struct variable
 typedef TSYM* PSYM;         // struct pointer
-
-void initializeTable(SYM* table, char* str, float total);
-void makeTable(SYM* table, char* str, float total);
-void printTable(SYM* table);
-void smartPrintTable(SYM* table);
-int cmp(const void* a, const void* b);
-int cmpT(const void* a, const void* b);
-void chomp(char* string);
-void printTree(struct SYM* root);
-int searchUniqueSymbols(SYM* table);
-struct SYM* buildTree(struct SYM* psym[], int N);
-void makeCodes(struct SYM* root);
-int makeCodeFile(SYM* table, FILE* fp_in, FILE* fp_101);
-unsigned char pack(unsigned char buf[]);
-void makeHeader(FILE* fp, FILE* fpResult, char signsture, int uniqueSymbols, SYM* table, int tailLength, long sizeOfFile, char* fileExtension);
-
 
 union CODE {
     unsigned char ch;
@@ -41,3 +23,15 @@ union CODE {
     } byte;
 };
 
+void initializeTable(SYM* table, char* str, float total);
+void makeTable(SYM* table, char* str, float total);
+void printTable(SYM* table);
+void smartPrintTable(SYM* table);
+int cmp(const void* a, const void* b);
+int searchUniqueSymbols(SYM* table);
+struct SYM* buildTree(struct SYM* psym[], int N);
+void makeCodes(struct SYM* root);
+int makeCodeFile(SYM* table, FILE* fp_in, FILE* fp_101);
+unsigned char pack(unsigned char buf[]);
+void makeHeader(FILE* fp, FILE* fpResult, char signsture, int uniqueSymbols, SYM* table, int tailLength, long sizeOfFile, char* fileExtension);
+char* getFileExtension(char* str);
