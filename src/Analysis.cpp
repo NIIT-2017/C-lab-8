@@ -3,9 +3,8 @@
 #include <string.h>
 #include "head1.h"
 
-void initializeTable(SYM* table, char* str, float total) {
-    int i = 0;
-    for (i = 0; i < 256; i++) {
+void initializeTable(SYM* table, char* str) {
+    for (int i = 0; i < 256; i++) {
         table[i].ch = i;
         table[i].freq = 0;
         table[i].code[0] = 0;

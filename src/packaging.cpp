@@ -49,6 +49,7 @@ char* getFileExtension(char* str) {
 }
 
 void makeHeader(FILE *fp, FILE *fpResult, char signsture, int uniqueSymbols, SYM* table, int tailLength, long sizeOfFile, char* fileExtension) {
+    int lengthOfFileExtension = strlen(fileExtension);
     //Write down the signature
     fwrite(&signsture, sizeof(char), 1, fpResult);
     //Write down number of unique symbols
@@ -63,5 +64,6 @@ void makeHeader(FILE *fp, FILE *fpResult, char signsture, int uniqueSymbols, SYM
     //Write down size of file 
     fwrite(&sizeOfFile,  sizeof(int), 1, fpResult);
     //Write down extension of file
+    fwrite(&lengthOfFileExtension, sizeof(int), 1, fpResult);
     fwrite(fileExtension,  sizeof(char), strlen(fileExtension), fpResult);
 }

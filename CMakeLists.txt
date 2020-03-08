@@ -19,7 +19,8 @@ file(GLOB TEST_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
 
 set(SRC_FILES1 ${PROJECT_SOURCE_DIR}/src/analysis.cpp)
 set(SRC_FILES2 ${PROJECT_SOURCE_DIR}/src/tree1.cpp)
-set(SRC_FILES3 ${PROJECT_SOURCE_DIR}/src/packaging.cpp)              
+set(SRC_FILES3 ${PROJECT_SOURCE_DIR}/src/packaging.cpp)
+set(SRC_FILES4 ${PROJECT_SOURCE_DIR}/src/unpacking.cpp)
 
 
 set(CMAKE_CXX_STANDARD 11)
@@ -27,12 +28,14 @@ set(CMAKE_CXX_STANDARD 11)
 add_library(analysis_lib ${SRC_FILES1})
 add_library(tree1_lib ${SRC_FILES2})
 add_library(packaging_lib ${SRC_FILES3})
+add_library(unpacking_lib ${SRC_FILES4})
 
 add_executable(analysis ${PROJECT_SOURCE_DIR}/src/main1.cpp)
 
 target_link_libraries(analysis analysis_lib)
 target_link_libraries(analysis tree1_lib)
 target_link_libraries(analysis packaging_lib)
+target_link_libraries(analysis unpacking_lib)
 
 
 ################################
