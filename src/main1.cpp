@@ -11,12 +11,22 @@ int main(int argc, char* argv[])
 	FILE* fp_in;
 	//fp_in = fopen("WarAndPeace.txt", "rb");
 	fp_in = fopen(argv[1], "rb");
-
 	int count = 0;
 	int i, j;
 	int ns = 0;
 	int found;
-	
+
+	int sym_count = 0;
+	unsigned char ch1;
+
+	while (fread(&ch1, sizeof(unsigned char), 1, fp_in))
+		sym_count++;
+	if (sym_count <= 1)
+	{
+		printf("The file is too small to compress.\nThe program is complete.\n");
+		return 0;
+	} 
+	rewind(fp_in);
 	while (fgets(line, 256, fp_in) != NULL)
 	{
 		chomp(line);
