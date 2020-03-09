@@ -20,7 +20,17 @@ char op2[100] = { 0 }; //вторая часть команды для компрессора - имя файла для об
 char op3[100] = { 0 }; //третья часть команды для компрессора - имя файла для вывода результата
 char commands[6][6] = { "c", "d", "dcmd", "ins", "exit", "f" }; //каталог команд
 
-int main()
+int RunCompressor()
+{
+    if (!strcmp(op1, commands[0]))
+        return Compress();
+    else if (!strcmp(op1, commands[1]))
+        return Decompress(0);
+    else
+        return Decompress(1);
+}
+
+int main(int argc, char* argv[])
 {
     chart = NULL;
     psym = NULL;
@@ -29,22 +39,24 @@ int main()
     size = 0;
     tail = 0;
     strcpy(outFileName, OFN);
-
-    printf("This is Compressor\n");
-    printf("Please, enter a command. For instructions enter \"ins\"\n");
     int flag = 0;
-    while (flag = readCommand())
+
+    if (argc >= 3)
     {
+        flag = readCommand_C(argc, argv);
         if (flag > 0)
-        {
-            if (!strcmp(op1, commands[0]))
-                flag = Compress();
-            else if (!strcmp(op1, commands[1]))
-                flag = Decompress(0);
-            else
-                flag = Decompress(1);
-        }
+            return RunCompressor();
+    }
+    else
+    {
+        printf("This is Compressor\n");
         printf("Please, enter a command. For instructions enter \"ins\"\n");
+        while (flag = readCommand_D())
+        {
+            if (flag > 0)
+                RunCompressor();
+            printf("Please, enter a command. For instructions enter \"ins\"\n");
+        }
     }
 
     return 0;

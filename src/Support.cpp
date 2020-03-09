@@ -144,27 +144,9 @@ void cleanop(char* op)
         op[i] = 0;
 }
 
-//распознование команды
-int readCommand()
+//анализ на содержание и допустимость веденной команды. Выполнение сервисных команд : вывод инструкции и таблицы встречаемости
+int analysisCommand(int number)
 {
-    cleanop(op1);
-    cleanop(op2);
-    cleanop(op3);
-
-    int number = 0; //число прочитаных частей команды
-    char str[STRSIZE] = { 0 }; //массив для хранения введеной команды
-    fgets(str, 200, stdin);
-    if (str != NULL && (strlen(str) - 1) >= 0)
-        str[strlen(str) - 1] = 0;
-    else
-        return Error(-3, str);
-
-    //разбор команды на части
-    if ((number = sscanf(str, "%s %s %s", op1, op2, op3)) == EOF)
-        return Error(-3, str);
-
-    //анализ на содержание и допустимость веденной команды
-
     //обработка команды с тремя операндами
     if (number == 3)
     {
@@ -216,6 +198,44 @@ int readCommand()
         return Error(-3, op1);
 
     return 1;
+}
+
+//распознование команды введеной при запуске программы
+int readCommand_C(int argc, char** argv)
+{
+    int number = 2; //число прочитаных частей команды
+
+    strcpy(op1, argv[1]);
+    strcpy(op2, argv[2]);
+    if (argc >= 4)
+    {
+        strcpy(op3, argv[3]);
+        number++;
+    }
+
+    return analysisCommand(number);
+}
+
+//распознование команды введеной в диалоговом режиме
+int readCommand_D()
+{
+    cleanop(op1);
+    cleanop(op2);
+    cleanop(op3);
+
+    int number = 0; //число прочитаных частей команды
+    char str[STRSIZE] = { 0 }; //массив для хранения введеной команды
+    fgets(str, 200, stdin);
+    if (str != NULL && (strlen(str) - 1) >= 0)
+        str[strlen(str) - 1] = 0;
+    else
+        return Error(-3, str);
+
+    //разбор команды на части
+    if ((number = sscanf(str, "%s %s %s", op1, op2, op3)) == EOF)
+        return Error(-3, str);
+
+    return analysisCommand(number);
 }
 
 //доплнение имени файлам расширением, если его нет
